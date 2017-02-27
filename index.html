@@ -24,6 +24,7 @@ function processForm()
 
   var person =
   {
+    "id": processName,
     "Name": processName,
     "Age": processAge,
     "Sex": processSex,
@@ -33,7 +34,7 @@ function processForm()
   $.ajax(
     {
       url: 'http://demoappgianni.azurewebsites.net/',
-      type: 'get',
+      type: 'post',
       dataType: 'json',
       success: callback(),
       data: JSON.stringify(person),
