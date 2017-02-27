@@ -30,17 +30,18 @@ function processForm()
     "Income": processIncome
   }
 
-
-
-    $.ajax(
+  $.ajax(
     {
       url: 'http://demoappgianni.azurewebsites.net/',
-      type: 'post',
+      type: 'get',
       dataType: 'json',
       success: callback(),
-      data: JSON.stringify(person)
+      data: JSON.stringify(person),
+      statusCode: {
+        200: function() { alert("ok");},
+        404: function() { alert("page not found");}
+      }
     });
-
 
 }
 function callback() {
