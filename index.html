@@ -4,50 +4,84 @@
 <head>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
 <script>
-function processForm()
+
+// Posts the information onto the database
+function postForm()
 {
-  var processName = document.getElementById("formName").value;
-  var processAge = document.getElementById("formAge").value;
-  var processSex = document.getElementById("formSex").value;
-  var processIncome = document.getElementById("formIncome").value;
+  // Gets the values from the form
+  var postName = document.getElementById("formName").value;
+  var postAge = document.getElementById("formAge").value;
+  var postSex = document.getElementById("formSex").value;
+  var postIncome = document.getElementById("formIncome").value;
 
-  //document.getElementById("displayName").innerHTML = "Name: " + processName;
-  //document.getElementById("displayAge").innerHTML = "Age: " + processAge;
-  //document.getElementById("displaySex").innerHTML = "Sex: " + processSex;
-  //document.getElementById("displayIncome").innerHTML = "Income: " + processIncome;
+  // Need to double-check if values are present and type checking
+  // Need to create an id with employee number!
 
-  //var myObj = { "Name":"John", "Age":31, "Sex":"Male", "Income":100000 };
-  //var myJSON = JSON.stringify(myObj);
-  var dataAccess = "http://demoappgianni.azurewebsites.net/"
-
-  //$.post(dataAccess, myJSON, callback(), "JSON");
-
+  // Creates the person JSON object
   var person =
   {
-    "id": processName,
-    "Name": processName,
-    "Age": processAge,
-    "Sex": processSex,
-    "Income": processIncome
+    "id": postName,
+    "Name": postName,
+    "Age": postAge,
+    "Sex": postSex,
+    "Income": postIncome
   }
 
+  // Main HTTP Post closure
   $.ajax(
     {
       url: 'http://demoappgianni.azurewebsites.net/tables/DemoTable',
       type: 'post',
-      dataType: 'json',
+      headers: {
+        'zumo-api-version': '2.0.0',
+        'Content-Type': 'application/json'
+      },
       success: callback(),
-      data: JSON.stringify(person),
+      data: JSON.stringify(person, null, 2),
       statusCode: {
         200: function() { alert("ok");},
-        404: function() { alert("page not found");}
+        201: function() { alert("success");},
+        400: function() { alert("format incorrect");},
+        403: function() { alert("forbidden");},
+        404: function() { alert("page not found");},
+        405: function() { alert("operation disabled");},
+        409: function() { alert("item already exists");},
+        500: function() { alert("internal Error");},
       }
     });
+}
 
+function getInfo()
+{
+  // Gets the name from the input
+  var getName = document.getElementById("getInfoID").value;
+
+  // Need to double-check if value is present and type checking
+
+  var getURL = 'http://demoappgianni.azurewebsites.net/tables/DemoTable/' + getName
+
+  $.ajax(
+    {
+      url: getURL,
+      type: 'get',
+      headers: {
+        'zumo-api-version': '2.0.0',
+        'Content-Type': 'application/json'
+      },
+      success: callback(),
+      statusCode: {
+        200: function(data) { alert("ok");},
+        400: function() { alert("format incorrect");},
+        404: function() { alert("page not found");},
+        405: function() { alert("operation disabled");},
+        500: function() { alert("internal Error");},
+      }
+    });
 }
 function callback() {
-  document.getElementById("displayName").innerHTML = "Success"
+  // This is an empty callback function
 }
+
 </script>
 </head>
 
@@ -75,16 +109,21 @@ function callback() {
 
   Income:<br>
   <input type="text" name="income" id="formIncome"><br><br>
-  <input type="submit" value="Submit" onclick="processForm()">
+
+  <input type="submit" value="Submit" onclick="postForm()">
+  <button type="button" onclick="postForm()">Try it</button>
 </form>
 
-<h1>Display Form</h1>
+<h1>Display User Information</h1>
+Full Name:
+<br>
+<input type="text" name="fullName" id="getInfoID">
+<br><br>
+<button type="button" onclick="getInfo()">Get Info</button>
+<br>
 <p id="displayName">Name: </p>
 <p id="displayAge">Age: </p>
 <p id="displaySex">Sex: </p>
 <p id="displayIncome">Income: </p>
-
-<button type="button" onclick="processForm()">Try it</button>
-
 </body>
 </html>
