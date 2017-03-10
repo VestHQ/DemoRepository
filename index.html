@@ -57,7 +57,6 @@ function getInfo()
   var getName = document.getElementById("getInfoID").value;
 
   // Need to double-check if value is present and type checking
-
   var getURL = 'http://demoappgianni.azurewebsites.net/tables/DemoTable/' + getName
 
   $.ajax(
@@ -70,9 +69,16 @@ function getInfo()
       },
       success: callback(),
       statusCode: {
-        200: function(data) { alert("ok");},
+        200: function(data) {
+          var userObject = JSON.parse(JSON.stringify(data));
+          document.getElementById("displayName").innerHTML = "Name: " + userObject.Name;
+          document.getElementById("displayAge").innerHTML = "Age: " + userObject.Age;
+          document.getElementById("displaySex").innerHTML = "Sex: " + userObject.Sex;
+          document.getElementById("displayIncome").innerHTML = "Income: " + userObject.Income;
+          alert("success");
+        },
         400: function() { alert("format incorrect");},
-        404: function() { alert("page not found");},
+        404: function() { alert("name not found");},
         405: function() { alert("operation disabled");},
         500: function() { alert("internal Error");},
       }
@@ -90,7 +96,7 @@ function callback() {
 <h1>Demo Website</h1>
 
 <p>
-  Think is just a demo website for Azure testing.
+  This is just a demo website for Azure testing.
   Please fill out the form.
 </p>
 
@@ -115,6 +121,9 @@ function callback() {
 </form>
 
 <h1>Display User Information</h1>
+<p>
+  Here you can check if the user was successfully inserted.
+</p>
 Full Name:
 <br>
 <input type="text" name="fullName" id="getInfoID">
